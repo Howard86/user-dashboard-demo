@@ -10,6 +10,5 @@ export default function Wrapper({ children }: ChildrenProps) {
   return <ApiProvider api={baseApi}>{children}</ApiProvider>;
 }
 
-export const appRender = (ui: React.ReactElement, options?: RenderOptions) => {
-  return render(ui, { wrapper: Wrapper, ...options });
-};
+export const appRender = (ui: React.ReactElement, options?: RenderOptions) =>
+  render(ui, { wrapper: Wrapper, ...options });
