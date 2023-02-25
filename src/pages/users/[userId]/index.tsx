@@ -1,31 +1,37 @@
+import { Button } from 'react-daisyui';
 import { skipToken } from '@reduxjs/toolkit/dist/query';
 import { useRouter } from 'next/router';
 
 import UserForm from '@/components/UserForm';
-import { useGetUserUserIdGetQuery } from '@/services/user-api';
-import type { UserRole } from '@/services/utils';
+import {
+  useDeleteUserUserIdDeleteMutation,
+  useGetUserUserIdGetQuery,
+  usePutUserUserIdPutMutation,
+} from '@/services/user-api';
+import {
+  mapUserSchemaToUser,
+  mapUserToUserSchema,
+  UserSchema,
+} from '@/services/utils';
 
 export default function UserPage() {
   const router = useRouter();
+  const [updateUser] = usePutUserUserIdPutMutation();
+  const [deleteUser, deleteMutation] = useDeleteUserUserIdDeleteMutation();
 
-  const { data, user, error } = useGetUserUserIdGetQuery(
-    typeof router.query.userId === 'string'
-      ? { userId: router.query.userId }
-      : skipToken,
+  const { userId } = router.query;
+
+  const { data, error } = useGetUserUserIdGetQuery(
+    typeof userId === 'string' ? { userId } : skipToken,
     {
       selectFromResult: (result) => ({
         ...result,
-        user: result.data
-          ? {
-              firstName: result.data.first_name,
-              lastName: result.data.last_name,
-              email: result.data.email || '',
-              role: (result.data.role || '') as UserRole,
-            }
-          : undefined,
+        data: result.data ? mapUserToUserSchema(result.data) : undefined,
       }),
     },
   );
+
+  if (deleteMutation.isSuccess) return <div>Redirecting...</div>;
 
   if (error)
     return (
@@ -35,14 +41,40 @@ export default function UserPage() {
       </>
     );
 
-  if (!router.isReady || !data) return <div>Loading...</div>;
+  if (!router.isReady || typeof userId !== 'string' || !data)
+    return <div>Loading...</div>;
+
+  const handleUpdateUser = async (values: UserSchema) => {
+    try {
+      await updateUser({
+        userId,
+        user: mapUserSchemaToUser(values),
+      }).unwrap();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      await deleteUser({ userId }).unwrap();
+      router.push('/');
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
-    <UserForm
-      title={`${data.first_name} ${data.last_name} profile`}
-      submitText="save and edit"
-      onSubmit={console.log}
-      defaultValues={user}
-    />
+    <>
+      <UserForm
+        title={`${data.firstName} ${data.lastName}`}
+        submitText="save and edit"
+        onSubmit={handleUpdateUser}
+        defaultValues={data}
+      />
+      <Button color="error" onClick={handleDeleteUser}>
+        Delete
+      </Button>
+    </>
   );
 }

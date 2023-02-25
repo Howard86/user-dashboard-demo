@@ -1,21 +1,17 @@
 import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { useRouter } from 'next/router';
 
 import FormInput from '@/components/FormInput';
 import FormSelect from '@/components/FormSelect';
 import ArrowRightIcon from '@/components/icons/ArrowRightIcon';
-import { mapUserRoleName, USER_ROLE_VALUES } from '@/services/utils';
-
-const userSchema = z.object({
-  firstName: z.string().min(1, { message: 'First name is required' }),
-  lastName: z.string().min(1, { message: 'Last name is required' }),
-  email: z.union([z.string().email(), z.literal('')]),
-  role: z.enum(USER_ROLE_VALUES),
-});
-
-type UserSchema = z.infer<typeof userSchema>;
+import {
+  mapUserRoleName,
+  USER_ROLE_VALUES,
+  UserSchema,
+  userSchema,
+} from '@/services/utils';
 
 interface UserFormProps {
   title: string;
@@ -37,6 +33,8 @@ export default function UserForm({
   onSubmit,
   defaultValues = DEFAULT_USER_SCHEMA,
 }: UserFormProps) {
+  const router = useRouter();
+
   const {
     handleSubmit,
     register,
@@ -53,9 +51,14 @@ export default function UserForm({
     <form className="flex flex-col" onSubmit={handleSubmitForm}>
       <div className="flex flex-col items-center justify-between gap-9 rounded-xl bg-white p-7.5 sm:flex-row">
         <div className="flex items-center justify-center gap-9">
-          <span className="btn-secondary btn-xs btn-circle btn">
+          <Button
+            onClick={router.back}
+            color="secondary"
+            size="xs"
+            shape="circle"
+          >
             <ArrowRightIcon className="rotate-180" />
-          </span>
+          </Button>
           <h1 className="text-h2">{title}</h1>
         </div>
         <Button color="success" size="sm" type="submit">

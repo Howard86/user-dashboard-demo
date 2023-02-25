@@ -1,4 +1,7 @@
 import type { AriaAttributes } from 'react';
+import { z } from 'zod';
+
+import type { User } from './user-api';
 
 export const getAriaDescribedBy = (
   name: string,
@@ -24,3 +27,29 @@ export const mapUserRoleName = (role?: string) => {
       return 'Regular User';
   }
 };
+
+export const userSchema = z.object({
+  id: z.string().optional(),
+  firstName: z.string().min(1, { message: 'First name is required' }),
+  lastName: z.string().min(1, { message: 'Last name is required' }),
+  email: z.union([z.string().email(), z.literal('')]),
+  role: z.enum(USER_ROLE_VALUES),
+});
+
+export type UserSchema = z.infer<typeof userSchema>;
+
+export const mapUserSchemaToUser = (user: UserSchema): User => ({
+  id: user.id,
+  first_name: user.firstName,
+  last_name: user.lastName,
+  email: user.email || undefined,
+  role: user.role || undefined,
+});
+
+export const mapUserToUserSchema = (user: User): UserSchema => ({
+  id: user.id,
+  firstName: user.first_name,
+  lastName: user.last_name,
+  email: user.email || '',
+  role: user.role || '',
+});

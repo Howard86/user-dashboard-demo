@@ -4,21 +4,25 @@ const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     getUsersGet: build.query<GetUsersGetApiResponse, GetUsersGetApiArg>({
       query: () => ({ url: `/` }),
+      providesTags: ['User'],
     }),
     postUserPost: build.mutation<PostUserPostApiResponse, PostUserPostApiArg>({
       query: (queryArg) => ({ url: `/`, method: 'POST', body: queryArg.user }),
+      invalidatesTags: ['User'],
     }),
     deleteUsersDelete: build.mutation<
       DeleteUsersDeleteApiResponse,
       DeleteUsersDeleteApiArg
     >({
       query: () => ({ url: `/`, method: 'DELETE' }),
+      invalidatesTags: ['User'],
     }),
     getUserUserIdGet: build.query<
       GetUserUserIdGetApiResponse,
       GetUserUserIdGetApiArg
     >({
       query: (queryArg) => ({ url: `/${queryArg.userId}` }),
+      providesTags: ['User'],
     }),
     putUserUserIdPut: build.mutation<
       PutUserUserIdPutApiResponse,
@@ -29,12 +33,14 @@ const injectedRtkApi = api.injectEndpoints({
         method: 'PUT',
         body: queryArg.user,
       }),
+      invalidatesTags: ['User'],
     }),
     deleteUserUserIdDelete: build.mutation<
       DeleteUserUserIdDeleteApiResponse,
       DeleteUserUserIdDeleteApiArg
     >({
       query: (queryArg) => ({ url: `/${queryArg.userId}`, method: 'DELETE' }),
+      invalidatesTags: ['User'],
     }),
   }),
   overrideExisting: false,
