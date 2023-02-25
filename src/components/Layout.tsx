@@ -16,10 +16,15 @@ interface DrawerButtonProps extends ChildrenProps {
   pathname?: string;
 }
 
-function DrawerButton({ href, pathname: path, children }: DrawerButtonProps) {
+const HOME_PATHNAME = '/';
+
+function DrawerButton({ href, pathname, children }: DrawerButtonProps) {
   const router = useRouter();
 
-  const isMatched = router.pathname === path;
+  const isMatched =
+    pathname === HOME_PATHNAME
+      ? router.pathname === HOME_PATHNAME
+      : pathname && router.pathname.startsWith(pathname);
 
   if (href) {
     return (
@@ -66,7 +71,7 @@ export default function Layout({ children }: ChildrenProps) {
             <DrawerButton href="/" pathname="/">
               <ClientIcon />
             </DrawerButton>
-            <DrawerButton href="/users/add" pathname="/users/add">
+            <DrawerButton href="/users/add" pathname="/users">
               <UserIcon />
             </DrawerButton>
             <DrawerButton>
