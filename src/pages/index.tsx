@@ -5,7 +5,7 @@ import Link from 'next/link';
 import AddIcon from '@/components/icons/AddIcon';
 import ArrowRightIcon from '@/components/icons/ArrowRightIcon';
 import GlassIcon from '@/components/icons/GlassIcon';
-import { useGetUsersGetQuery } from '@/services/user-api';
+import { useGetUsersGetQuery, userSelectors } from '@/services/user-api';
 import { mapUserRoleName } from '@/services/utils';
 
 export default function HomePage() {
@@ -16,11 +16,13 @@ export default function HomePage() {
       selectFromResult: (result) => ({
         ...result,
         data: result.data
-          ? result.data.filter((user) =>
-              `${user.first_name}${user.last_name}${user.email || ''}`
-                .toLowerCase()
-                .includes(searchText.toLowerCase()),
-            )
+          ? userSelectors
+              .selectAll(result.data)
+              .filter((user) =>
+                `${user.first_name}${user.last_name}${user.email || ''}`
+                  .toLowerCase()
+                  .includes(searchText.toLowerCase()),
+              )
           : undefined,
       }),
     },

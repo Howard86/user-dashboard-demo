@@ -7,6 +7,8 @@ import {
   useDeleteUserUserIdDeleteMutation,
   useGetUserUserIdGetQuery,
   usePutUserUserIdPutMutation,
+  userApi,
+  userSelectors,
 } from '@/services/user-api';
 import {
   mapUserSchemaToUser,
@@ -30,6 +32,21 @@ export default function UserPage() {
       }),
     },
   );
+  const { user } = userApi.endpoints.getUsersGet.useQueryState(undefined, {
+    selectFromResult: (result) => {
+      const existedUser =
+        result.data && typeof userId === 'string'
+          ? userSelectors.selectById(result.data, userId)
+          : undefined;
+
+      return {
+        ...result,
+        user: existedUser ? mapUserToUserSchema(existedUser) : undefined,
+      };
+    },
+  });
+
+  const selectedUser = user || data;
 
   if (deleteMutation.isSuccess) return <div>Redirecting...</div>;
 
@@ -41,7 +58,7 @@ export default function UserPage() {
       </>
     );
 
-  if (!router.isReady || typeof userId !== 'string' || !data)
+  if (!router.isReady || typeof userId !== 'string' || !selectedUser)
     return <div>Loading...</div>;
 
   const handleUpdateUser = async (values: UserSchema) => {
@@ -67,10 +84,10 @@ export default function UserPage() {
   return (
     <>
       <UserForm
-        title={`${data.firstName} ${data.lastName}`}
+        title={`${selectedUser.firstName} ${selectedUser.lastName}`}
         submitText="save and edit"
         onSubmit={handleUpdateUser}
-        defaultValues={data}
+        defaultValues={selectedUser}
       />
       <Button color="error" onClick={handleDeleteUser}>
         Delete
