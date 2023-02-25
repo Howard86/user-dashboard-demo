@@ -1,5 +1,6 @@
 import type { ChildrenProps } from 'react';
 import { Button, Drawer } from 'react-daisyui';
+import { Poppins } from '@next/font/google';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,6 +11,13 @@ import SettingIcon from '@/components/icons/SettingIcon';
 import SignOutIcon from '@/components/icons/SignOutIcon';
 import UserIcon from '@/components/icons/UserIcon';
 import logo from '@/public/logo.png';
+
+const poppins = Poppins({
+  weight: ['400', '600', '700'],
+  display: 'swap',
+  style: 'normal',
+  subsets: ['latin'],
+});
 
 interface DrawerButtonProps extends ChildrenProps {
   href?: string;
@@ -55,7 +63,7 @@ function DrawerButton({ href, pathname, children }: DrawerButtonProps) {
 
 export default function Layout({ children }: ChildrenProps) {
   return (
-    <div className="flex">
+    <div className={`flex ${poppins.className}`}>
       <Drawer
         className="max-w-[100px]"
         open
@@ -85,7 +93,7 @@ export default function Layout({ children }: ChildrenProps) {
         }
       />
       <div className="w-full bg-background p-5">
-        <div className="container mx-auto max-w-screen-lg">{children}</div>
+        <main className="container mx-auto max-w-screen-lg">{children}</main>
       </div>
     </div>
   );
