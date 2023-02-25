@@ -66,7 +66,7 @@ export default function Layout({ children }: ChildrenProps) {
             <DrawerButton href="/" pathname="/">
               <ClientIcon />
             </DrawerButton>
-            <DrawerButton pathname="/users/[userId]">
+            <DrawerButton href="/users/add" pathname="/users/add">
               <UserIcon />
             </DrawerButton>
             <DrawerButton>

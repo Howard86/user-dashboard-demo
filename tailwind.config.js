@@ -1,4 +1,4 @@
-/* eslint-disable global-require */
+/* eslint-disable global-require, import/no-extraneous-dependencies */
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -10,12 +10,14 @@ module.exports = {
   theme: {
     extend: {
       fontSize: {
-        h2: ['2.75rem', { fontWeight: 700, lineHeight: '3.75rem' }],
+        h2: ['1.375rem', { fontWeight: 700, lineHeight: '1.875rem' }],
       },
       colors: {
         role: '#7F85A2',
         background: '#F7F7F7',
         'darker-background': '#A4A8BB',
+        label: '#9FA3B9',
+        border: '#8F92A133',
       },
       spacing: {
         6.5: '1.625rem',
@@ -24,7 +26,7 @@ module.exports = {
       },
     },
   },
-  plugins: [require('daisyui')],
+  plugins: [require('@tailwindcss/forms'), require('daisyui')],
   daisyui: {
     themes: [
       {
