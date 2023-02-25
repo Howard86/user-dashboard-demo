@@ -6,6 +6,7 @@ const { PHASE_PRODUCTION_BUILD } = require('next/constants');
 const config = {
   reactStrictMode: true,
   swcMinify: true,
+  transpilePackages: ['react-daisyui'],
 };
 
 module.exports = (phase) => {
