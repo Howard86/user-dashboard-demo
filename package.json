@@ -44,6 +44,7 @@
     "start": "next start",
     "test": "jest",
     "test:watch": "jest --watch",
+    "generate": "npx @rtk-query/codegen-openapi openapi-config.ts && eslint src/services --fix",
     "prepare": "husky install"
   },
   "dependencies": {

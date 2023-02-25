@@ -1,5 +1,8 @@
+import { ApiProvider } from '@reduxjs/toolkit/dist/query/react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+
+import { baseApi } from '@/services/base-api';
 
 import '@/styles/globals.css';
 
@@ -10,7 +13,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>Next.js Tailwind Template</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Component {...pageProps} />
+      <ApiProvider api={baseApi}>
+        <Component {...pageProps} />
+      </ApiProvider>
     </>
   );
 }
