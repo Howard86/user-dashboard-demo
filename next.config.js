@@ -6,9 +6,6 @@ const { PHASE_PRODUCTION_BUILD } = require('next/constants');
 const config = {
   reactStrictMode: true,
   swcMinify: true,
-  experimental: {
-    appDir: true,
-  },
 };
 
 module.exports = (phase) => {
