@@ -6,12 +6,13 @@ import { z } from 'zod';
 import FormInput from '@/components/FormInput';
 import FormSelect from '@/components/FormSelect';
 import ArrowRightIcon from '@/components/icons/ArrowRightIcon';
+import { mapUserRoleName, USER_ROLE_VALUES } from '@/services/utils';
 
 const userSchema = z.object({
   firstName: z.string().min(1, { message: 'First name is required' }),
   lastName: z.string().min(1, { message: 'Last name is required' }),
   email: z.union([z.string().email(), z.literal('')]),
-  role: z.enum(['ADMIN', 'DEV', '']),
+  role: z.enum(USER_ROLE_VALUES),
 });
 
 type UserSchema = z.infer<typeof userSchema>;
@@ -92,9 +93,11 @@ export default function UserForm({
             label="ROLE"
             name="role"
           >
-            <option value="">Regular User</option>
-            <option value="DEV">Developer</option>
-            <option value="ADMIN">Administrator</option>
+            {USER_ROLE_VALUES.map((role) => (
+              <option key={role} value={role}>
+                {mapUserRoleName(role)}
+              </option>
+            ))}
           </FormSelect>
         </div>
       </section>
