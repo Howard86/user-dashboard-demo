@@ -1,3 +1,4 @@
+import { type ChangeEvent, useState } from 'react';
 import { Button } from 'react-daisyui';
 import Link from 'next/link';
 
@@ -8,7 +9,22 @@ import { useGetUsersGetQuery } from '@/services/user-api';
 import { mapUserRoleName } from '@/services/utils';
 
 export default function HomePage() {
-  const { error, data } = useGetUsersGetQuery();
+  const [searchText, setSearchText] = useState('');
+  const { error, data, isLoading, isUninitialized } = useGetUsersGetQuery(
+    undefined,
+    {
+      selectFromResult: (result) => ({
+        ...result,
+        data: result.data
+          ? result.data.filter((user) =>
+              `${user.first_name}${user.last_name}${user.email || ''}`
+                .toLowerCase()
+                .includes(searchText.toLowerCase()),
+            )
+          : undefined,
+      }),
+    },
+  );
 
   if (error)
     return (
@@ -17,6 +33,10 @@ export default function HomePage() {
         <pre>{JSON.stringify(error, null, 2)}</pre>
       </>
     );
+
+  const handleUpdateSearchText = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
 
   return (
     <>
@@ -35,6 +55,8 @@ export default function HomePage() {
               type="search"
               name="user"
               id="user"
+              onChange={handleUpdateSearchText}
+              value={searchText}
               className="block w-full rounded-md border-gray-300 py-5 pl-10 focus:shadow-xl focus:ring-primary-focus sm:text-sm"
               placeholder="Search for a user"
             />
@@ -44,7 +66,7 @@ export default function HomePage() {
         <Button
           color="accent"
           startIcon={
-            <AddIcon className="btn-primary btn-xs btn-square btn p-1" />
+            <AddIcon className="btn-primary btn-square btn-xs btn p-1" />
           }
         >
           add new user
@@ -52,7 +74,7 @@ export default function HomePage() {
       </div>
 
       <section className="grid grid-cols-3 gap-7.5 py-5">
-        {data ? (
+        {data && data.length > 0 ? (
           data.map(
             (user) =>
               user.id && (
@@ -78,7 +100,11 @@ export default function HomePage() {
               ),
           )
         ) : (
-          <div>Loading ...</div>
+          <div>
+            {isLoading || isUninitialized
+              ? 'Loading...'
+              : `Cannot find results with ${searchText}`}
+          </div>
         )}
       </section>
     </>
