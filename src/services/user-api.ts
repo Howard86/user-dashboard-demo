@@ -1,12 +1,36 @@
+import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
+
 import { baseApi as api } from './base-api';
+
+const userEntityAdapter = createEntityAdapter<User>();
+
+export const userSelectors = userEntityAdapter.getSelectors();
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getUsersGet: build.query<GetUsersGetApiResponse, GetUsersGetApiArg>({
+    getUsersGet: build.query<EntityState<User>, GetUsersGetApiArg>({
       query: () => ({ url: `/` }),
+      transformResponse: (users: GetUsersGetApiResponse) =>
+        userEntityAdapter.setMany(
+          userEntityAdapter.getInitialState(),
+          users.filter((user) => user.id),
+        ),
+
+      providesTags: ['User'],
     }),
     postUserPost: build.mutation<PostUserPostApiResponse, PostUserPostApiArg>({
       query: (queryArg) => ({ url: `/`, method: 'POST', body: queryArg.user }),
+      onQueryStarted: async (_arg, { dispatch, queryFulfilled }) => {
+        const response = await queryFulfilled;
+
+        dispatch(
+          injectedRtkApi.util.updateQueryData(
+            'getUsersGet',
+            undefined,
+            (state) => userEntityAdapter.addOne(state, response.data),
+          ),
+        );
+      },
     }),
     deleteUsersDelete: build.mutation<
       DeleteUsersDeleteApiResponse,
@@ -19,6 +43,18 @@ const injectedRtkApi = api.injectEndpoints({
       GetUserUserIdGetApiArg
     >({
       query: (queryArg) => ({ url: `/${queryArg.userId}` }),
+      onQueryStarted: async (_arg, { dispatch, queryFulfilled }) => {
+        const response = await queryFulfilled;
+
+        dispatch(
+          injectedRtkApi.util.updateQueryData(
+            'getUsersGet',
+            undefined,
+            (state) => userEntityAdapter.addOne(state, response.data),
+          ),
+        );
+      },
+      providesTags: ['User'],
     }),
     putUserUserIdPut: build.mutation<
       PutUserUserIdPutApiResponse,
@@ -29,12 +65,48 @@ const injectedRtkApi = api.injectEndpoints({
         method: 'PUT',
         body: queryArg.user,
       }),
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        dispatch(
+          injectedRtkApi.util.updateQueryData(
+            'getUsersGet',
+            undefined,
+            (state) =>
+              userEntityAdapter.updateOne(state, {
+                id: arg.userId,
+                changes: arg.user,
+              }),
+          ),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          dispatch(injectedRtkApi.util.invalidateTags(['User']));
+          throw error;
+        }
+      },
     }),
     deleteUserUserIdDelete: build.mutation<
       DeleteUserUserIdDeleteApiResponse,
       DeleteUserUserIdDeleteApiArg
     >({
       query: (queryArg) => ({ url: `/${queryArg.userId}`, method: 'DELETE' }),
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        dispatch(
+          injectedRtkApi.util.updateQueryData(
+            'getUsersGet',
+            undefined,
+            (state) => userEntityAdapter.removeOne(state, arg.userId),
+          ),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          dispatch(injectedRtkApi.util.invalidateTags(['User']));
+          throw error;
+        }
+      },
     }),
   }),
   overrideExisting: false,
