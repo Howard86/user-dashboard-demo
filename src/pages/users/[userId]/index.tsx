@@ -1,4 +1,3 @@
-import { Button } from 'react-daisyui';
 import { toast } from 'react-hot-toast';
 import { skipToken } from '@reduxjs/toolkit/dist/query';
 import { useRouter } from 'next/router';
@@ -101,9 +100,13 @@ export default function UserPage() {
         onSubmit={handleUpdateUser}
         defaultValues={selectedUser}
       />
-      <Button color="error" onClick={handleDeleteUser}>
+      <button
+        type="button"
+        className="btn-error btn"
+        onClick={handleDeleteUser}
+      >
         Delete
-      </Button>
+      </button>
     </>
   );
 }

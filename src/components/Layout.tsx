@@ -1,5 +1,4 @@
 import type { ChildrenProps } from 'react';
-import { Button, Drawer } from 'react-daisyui';
 import { Poppins } from '@next/font/google';
 import clsx from 'clsx';
 import Image from 'next/image';
@@ -26,7 +25,7 @@ interface DrawerButtonProps extends ChildrenProps {
 
 const HOME_PATHNAME = '/';
 
-function DrawerButton({ href, pathname, children }: DrawerButtonProps) {
+function DrawerButton({ href, pathname = href, children }: DrawerButtonProps) {
   const router = useRouter();
 
   const isMatched =
@@ -34,64 +33,48 @@ function DrawerButton({ href, pathname, children }: DrawerButtonProps) {
       ? router.pathname === HOME_PATHNAME
       : pathname && router.pathname.startsWith(pathname);
 
-  if (href) {
-    return (
-      <Link
-        className={clsx(
-          'btn-square btn',
-          isMatched
-            ? 'btn-primary'
-            : 'btn-accent bg-background text-darker-background',
-        )}
-        href={href}
-      >
-        {children}
-      </Link>
-    );
-  }
-
   return (
-    <Button
-      shape="square"
-      color={isMatched ? 'primary' : 'accent'}
-      className={isMatched ? undefined : 'bg-background text-darker-background'}
+    <Link
+      className={clsx(
+        'btn-square btn',
+        isMatched
+          ? 'btn-primary'
+          : 'btn-accent bg-background text-darker-background',
+      )}
+      href={href || HOME_PATHNAME}
     >
       {children}
-    </Button>
+    </Link>
   );
 }
 
 export default function Layout({ children }: ChildrenProps) {
   return (
-    <div className={`flex ${poppins.className}`}>
-      <Drawer
-        className="max-w-[100px]"
-        open
-        side={
-          <div className="flex flex-col gap-6.5 bg-white p-6.5">
-            <Image
-              alt="logo"
-              src={logo}
-              className="mb-1.5"
-              width={48}
-              height={48}
-            />
-            <DrawerButton href="/" pathname="/">
-              <ClientIcon />
-            </DrawerButton>
-            <DrawerButton href="/users/add" pathname="/users">
-              <UserIcon />
-            </DrawerButton>
-            <DrawerButton>
-              <SettingIcon />
-            </DrawerButton>
-            <div className="flex-1" />
-            <DrawerButton>
-              <SignOutIcon />
-            </DrawerButton>
-          </div>
-        }
-      />
+    <div className={`flex ${poppins.className} min-h-full`}>
+      <aside className="flex flex-col gap-6.5 bg-white p-6.5">
+        <Link href={HOME_PATHNAME}>
+          <Image
+            alt="logo"
+            src={logo}
+            className="mb-1.5"
+            width={48}
+            height={48}
+          />
+        </Link>
+        <DrawerButton href="/">
+          <ClientIcon />
+        </DrawerButton>
+        <DrawerButton href="/users/add" pathname="/users">
+          <UserIcon />
+        </DrawerButton>
+        <DrawerButton>
+          <SettingIcon />
+        </DrawerButton>
+        <div className="flex-1" />
+        <DrawerButton>
+          <SignOutIcon />
+        </DrawerButton>
+      </aside>
       <div className="w-full bg-background p-5">
         <main className="container mx-auto max-w-screen-lg">{children}</main>
       </div>

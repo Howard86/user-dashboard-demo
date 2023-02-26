@@ -1,5 +1,4 @@
 import { type ChangeEvent, useState } from 'react';
-import { Button } from 'react-daisyui';
 import Link from 'next/link';
 
 import AddIcon from '@/components/icons/AddIcon';
@@ -42,15 +41,15 @@ export default function HomePage() {
 
   return (
     <>
-      <h1 className="text-h2">Our Users</h1>
-      <div className="flex items-center justify-between">
-        <div className="py-8">
+      <h1 className="mt-8 text-h2">Our Users</h1>
+      <div className="flex flex-col justify-between gap-4 py-8 sm:flex-row sm:items-center">
+        <div>
           {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
           <label htmlFor="user" className="sr-only ">
             Search User
           </label>
-          <div className="relative mt-1 rounded-md shadow-sm">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <div className="relative mt-1">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-5">
               <GlassIcon />
             </div>
             <input
@@ -59,30 +58,26 @@ export default function HomePage() {
               id="user"
               onChange={handleUpdateSearchText}
               value={searchText}
-              className="block w-full rounded-md border-gray-300 py-5 pl-10 focus:shadow-xl focus:ring-primary-focus sm:text-sm"
+              className="block w-full rounded-[18px] border-gray-300 py-5 pl-15 focus:shadow-xl focus:ring-0 focus:ring-primary-focus"
               placeholder="Search for a user"
             />
           </div>
         </div>
 
-        <Button
-          color="accent"
-          startIcon={
-            <AddIcon className="btn-primary btn-square btn-xs btn p-1" />
-          }
-        >
+        <Link href="/users/add" className="btn-accent btn gap-2">
+          <AddIcon className="btn-primary btn-square btn-xs btn p-1" />
           add new user
-        </Button>
+        </Link>
       </div>
 
-      <section className="grid grid-cols-3 gap-7.5 py-5">
+      <section className="grid grid-cols-1 gap-5 py-5 sm:grid-cols-2 sm:gap-7.5 md:grid-cols-3">
         {data && data.length > 0 ? (
           data.map(
             (user) =>
               user.id && (
                 <article
                   key={user.id}
-                  className="flex items-center rounded-xl bg-white pt-6 pb-5 pr-7.5 pl-7"
+                  className="flex items-center gap-1 rounded-xl bg-white pt-6 pb-5 pr-7.5 pl-7"
                 >
                   <div className="flex-1">
                     <h2 className="text-lg font-semibold leading-5">
@@ -102,7 +97,7 @@ export default function HomePage() {
               ),
           )
         ) : (
-          <div>
+          <div className="col-span-3">
             {isLoading || isUninitialized
               ? 'Loading...'
               : `Cannot find results with ${searchText}`}

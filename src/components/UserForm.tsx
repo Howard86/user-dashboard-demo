@@ -1,4 +1,3 @@
-import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/router';
@@ -51,19 +50,18 @@ export default function UserForm({
     <form className="flex flex-col" onSubmit={handleSubmitForm}>
       <div className="flex flex-col items-center justify-between gap-9 rounded-xl bg-white p-7.5 sm:flex-row">
         <div className="flex items-center justify-center gap-9">
-          <Button
+          <button
+            type="button"
             onClick={router.back}
-            color="secondary"
-            size="xs"
-            shape="circle"
+            className="btn-secondary btn-xs btn-circle btn"
           >
             <ArrowRightIcon className="rotate-180" />
-          </Button>
+          </button>
           <h1 className="text-h2">{title}</h1>
         </div>
-        <Button color="success" size="sm" type="submit">
+        <button className="btn-success btn-sm btn text-white" type="submit">
           {submitText}
-        </Button>
+        </button>
       </div>
       <section className="my-10 rounded-xl bg-white p-8">
         <h2 className="text-lg font-bold">User information</h2>
