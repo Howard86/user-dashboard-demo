@@ -11,7 +11,11 @@ const injectedRtkApi = api.injectEndpoints({
     getUsersGet: build.query<EntityState<User>, GetUsersGetApiArg>({
       query: () => ({ url: `/` }),
       transformResponse: (users: GetUsersGetApiResponse) =>
-        userEntityAdapter.setMany(userEntityAdapter.getInitialState(), users),
+        userEntityAdapter.setMany(
+          userEntityAdapter.getInitialState(),
+          users.filter((user) => user.id),
+        ),
+
       providesTags: ['User'],
     }),
     postUserPost: build.mutation<PostUserPostApiResponse, PostUserPostApiArg>({
@@ -50,6 +54,7 @@ const injectedRtkApi = api.injectEndpoints({
           ),
         );
       },
+      providesTags: ['User'],
     }),
     putUserUserIdPut: build.mutation<
       PutUserUserIdPutApiResponse,

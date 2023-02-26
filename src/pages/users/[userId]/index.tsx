@@ -23,21 +23,12 @@ export default function UserPage() {
 
   const { userId } = router.query;
 
-  const { data, error } = useGetUserUserIdGetQuery(
-    typeof userId === 'string' ? { userId } : skipToken,
-    {
-      selectFromResult: (result) => ({
-        ...result,
-        data: result.data ? mapUserToUserSchema(result.data) : undefined,
-      }),
-    },
-  );
   const { user } = userApi.endpoints.getUsersGet.useQueryState(undefined, {
     selectFromResult: (result) => {
       const existedUser =
-        result.data && typeof userId === 'string'
-          ? userSelectors.selectById(result.data, userId)
-          : undefined;
+        result.data &&
+        typeof userId === 'string' &&
+        userSelectors.selectById(result.data, userId);
 
       return {
         ...result,
@@ -45,6 +36,18 @@ export default function UserPage() {
       };
     },
   });
+
+  const { data, error } = useGetUserUserIdGetQuery(
+    !user && deleteMutation.isUninitialized && typeof userId === 'string'
+      ? { userId }
+      : skipToken,
+    {
+      selectFromResult: (result) => ({
+        ...result,
+        data: result.data ? mapUserToUserSchema(result.data) : undefined,
+      }),
+    },
+  );
 
   const selectedUser = user || data;
 
