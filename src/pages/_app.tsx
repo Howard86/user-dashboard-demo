@@ -12,8 +12,11 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Next.js Tailwind Template</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>User Dashboard demo</title>
+        <meta
+          name="description"
+          content="This is a demo website showing how to manage users info with external api"
+        />
       </Head>
       <ApiProvider api={baseApi}>
         <Layout>

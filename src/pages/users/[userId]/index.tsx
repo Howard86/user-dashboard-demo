@@ -1,5 +1,6 @@
 import { toast } from 'react-hot-toast';
 import { skipToken } from '@reduxjs/toolkit/dist/query';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import SpinnerIcon from '@/components/icons/SpinnerIcon';
@@ -106,6 +107,9 @@ export default function UserPage() {
 
   return (
     <>
+      <Head>
+        <title>{`${selectedUser.firstName} ${selectedUser.lastName}`}</title>
+      </Head>
       <UserForm
         title={`${selectedUser.firstName} ${selectedUser.lastName}`}
         submitText="save and edit"

@@ -1,4 +1,5 @@
 import { type ChangeEvent, useState } from 'react';
+import Head from 'next/head';
 import Link from 'next/link';
 
 import AddIcon from '@/components/icons/AddIcon';
@@ -42,6 +43,9 @@ export default function HomePage() {
 
   return (
     <>
+      <Head>
+        <title>User List</title>
+      </Head>
       <h1 className="mt-8 text-h2">Our Users</h1>
       <div className="flex flex-col justify-between gap-4 py-8 sm:flex-row sm:items-center">
         <div>
@@ -66,7 +70,7 @@ export default function HomePage() {
         </div>
 
         <Link href="/users/add" className="btn-accent btn gap-2">
-          <AddIcon className="btn-primary btn-xs btn-square btn p-1" />
+          <AddIcon className="btn-primary btn-square btn-xs btn p-1" />
           add new user
         </Link>
       </div>

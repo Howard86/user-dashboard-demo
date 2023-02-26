@@ -1,4 +1,5 @@
 import { toast } from 'react-hot-toast';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import UserForm from '@/components/UserForm';
@@ -26,10 +27,15 @@ export default function AddUserPage() {
   };
 
   return (
-    <UserForm
-      title="Add new user"
-      submitText="save and add"
-      onSubmit={handleSubmitForm}
-    />
+    <>
+      <Head>
+        <title>Add new user</title>
+      </Head>
+      <UserForm
+        title="Add new user"
+        submitText="save and add"
+        onSubmit={handleSubmitForm}
+      />
+    </>
   );
 }
