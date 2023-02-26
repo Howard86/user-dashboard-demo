@@ -12,6 +12,8 @@ import {
   userSchema,
 } from '@/services/utils';
 
+import SpinnerIcon from './icons/SpinnerIcon';
+
 interface UserFormProps {
   title: string;
   submitText: string;
@@ -37,7 +39,7 @@ export default function UserForm({
   const {
     handleSubmit,
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<UserSchema>({
     mode: 'onBlur',
     defaultValues,
@@ -59,8 +61,12 @@ export default function UserForm({
           </button>
           <h1 className="text-h2">{title}</h1>
         </div>
-        <button className="btn-success btn-sm btn text-white" type="submit">
-          {submitText}
+        <button
+          disabled={!isDirty || isSubmitting}
+          className="btn-success btn-sm btn text-white"
+          type="submit"
+        >
+          {isSubmitting ? <SpinnerIcon className="h-5" /> : submitText}
         </button>
       </div>
       <section className="my-10 rounded-xl bg-white p-8">

@@ -2,6 +2,7 @@ import { toast } from 'react-hot-toast';
 import { skipToken } from '@reduxjs/toolkit/dist/query';
 import { useRouter } from 'next/router';
 
+import SpinnerIcon from '@/components/icons/SpinnerIcon';
 import UserForm from '@/components/UserForm';
 import {
   useDeleteUserUserIdDeleteMutation,
@@ -51,7 +52,13 @@ export default function UserPage() {
 
   const selectedUser = user || data;
 
-  if (deleteMutation.isSuccess) return <div>Redirecting...</div>;
+  if (deleteMutation.isSuccess)
+    return (
+      <div className="inline-flex items-center gap-2">
+        <SpinnerIcon className="h-4" />
+        Redirecting...
+      </div>
+    );
 
   if (error)
     return (
@@ -62,7 +69,12 @@ export default function UserPage() {
     );
 
   if (!router.isReady || typeof userId !== 'string' || !selectedUser)
-    return <div>Loading...</div>;
+    return (
+      <div className="inline-flex items-center gap-2">
+        <SpinnerIcon className="h-4" />
+        Loading...
+      </div>
+    );
 
   const handleUpdateUser = async (values: UserSchema) => {
     try {
@@ -102,7 +114,7 @@ export default function UserPage() {
       />
       <button
         type="button"
-        className="btn-error btn"
+        className="btn-error btn text-white"
         onClick={handleDeleteUser}
       >
         Delete

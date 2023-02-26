@@ -4,6 +4,7 @@ import Link from 'next/link';
 import AddIcon from '@/components/icons/AddIcon';
 import ArrowRightIcon from '@/components/icons/ArrowRightIcon';
 import GlassIcon from '@/components/icons/GlassIcon';
+import SpinnerIcon from '@/components/icons/SpinnerIcon';
 import { useGetUsersGetQuery, userSelectors } from '@/services/user-api';
 import { mapUserRoleName } from '@/services/utils';
 
@@ -65,7 +66,7 @@ export default function HomePage() {
         </div>
 
         <Link href="/users/add" className="btn-accent btn gap-2">
-          <AddIcon className="btn-primary btn-square btn-xs btn p-1" />
+          <AddIcon className="btn-primary btn-xs btn-square btn p-1" />
           add new user
         </Link>
       </div>
@@ -97,7 +98,8 @@ export default function HomePage() {
               ),
           )
         ) : (
-          <div className="col-span-3">
+          <div className="col-span-3 inline-flex items-center gap-2">
+            <SpinnerIcon className="h-4" />
             {isLoading || isUninitialized
               ? 'Loading...'
               : `Cannot find results with ${searchText}`}
