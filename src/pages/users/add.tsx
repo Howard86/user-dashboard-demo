@@ -1,3 +1,4 @@
+import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/router';
 
 import UserForm from '@/components/UserForm';
@@ -14,10 +15,12 @@ export default function AddUserPage() {
         user: mapUserSchemaToUser(values),
       }).unwrap();
 
-      if (user.id) {
-        router.push(`/users/${user.id}`);
-      }
+      if (!user.id) throw new Error('API returned invalid user');
+
+      toast.success(`${user.first_name} ${user.last_name} added successfully`);
+      router.push(`/users/${user.id}`);
     } catch (e) {
+      toast.error('Failed to add user');
       console.error(e);
     }
   };
